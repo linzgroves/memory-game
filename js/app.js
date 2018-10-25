@@ -1,3 +1,17 @@
+// Create an array that holds the icon classes that will need to be shuffled
+const deckArray = ['fa-diamond', 'fa-paper-plane', 'fa-anchor', 'fa-bolt',
+    'fa-cube', 'fa-leaf', 'fa-bicycle', 'fa-bomb', 'fa-diamond', 'fa-paper-plane',
+    'fa-anchor', 'fa-bolt', 'fa-cube', 'fa-leaf', 'fa-bicycle', 'fa-bomb'
+  ],
+  // Iterate over array items and return a single value with 'reduce'
+  listItems = deckArray.reduce((result, icon) => {
+    // Use template literals to add the returnd value from the array to the html template for li items
+    result += `<li class="card"><i class="fa ${icon}"></i></li>`;
+    return result;
+  }, '');
+resultElement = document.getElementById('resultDeck');
+
+resultElement.innerHTML = listItems;
 /*
  * Create a list that holds all of your cards
  * This also targets the parent element of .card li items so addEventListener can be used
@@ -50,7 +64,10 @@ function shuffle(array) {
  *    + if all cards have matched, display a message with the final score (put this functionality in another function that you call from this one)
  */
 
-/* Use addEventListener to listen for the cards being clicked and then call the toggle function */
+// Create an empty array for the two toggled cards to pushed to so they can be compared
+let toggledCards = [];
+
+// Use addEventListener to listen for the cards being clicked and then call the toggle function
 deck.addEventListener('click', event => {
   const cardTarget = event.target;
   if (isValidClick(cardTarget)) {
@@ -62,7 +79,7 @@ deck.addEventListener('click', event => {
   }
 });
 
-/* Check if click meets all the conditions */
+// Check if click meets all the conditions
 function isValidClick(cardTarget) {
   return (
     cardTarget.classList.contains('card') &&
@@ -72,19 +89,18 @@ function isValidClick(cardTarget) {
   );
 }
 
-/* This toggles the open and show classes */
+// This toggles the open and show classes
 function toggleCard(card) {
   card.classList.toggle('open');
   card.classList.toggle('show');
 }
 
-/* Function to push any toggled cards into the toggledCards array */
+// Function to push any toggled cards into the toggledCards array
 function toggledCardsList(cardTarget) {
   toggledCards.push(cardTarget);
-  console.log(toggledCards);
 }
 
-/* Check if the cards clicked and added to the toggledCards array match and add timeout so toggles isn't immediate*/
+// Check if the cards clicked and added to the toggledCards array match and add timeout so toggles isn't immediate
 function checkIfMatch() {
   if (
     toggledCards[0].firstElementChild.className ===
