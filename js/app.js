@@ -5,7 +5,7 @@ const deckArray = ['fa-diamond', 'fa-paper-plane', 'fa-anchor', 'fa-bolt',
   ],
   // Iterate over array items and return a single value with 'reduce'
   listItems = deckArray.reduce((result, icon) => {
-    // Use template literals to add the returnd value from the array to the html template for li items
+    // Use template literals to add the returned value from the array to the html template for li items
     result += `<li class="card"><i class="fa ${icon}"></i></li>`;
     return result;
   }, '');
@@ -75,6 +75,7 @@ deck.addEventListener('click', event => {
     toggledCardsList(cardTarget);
     if (toggledCards.length === 2) {
       checkIfMatch(cardTarget);
+      addCount();
     }
   }
 });
@@ -116,4 +117,14 @@ function checkIfMatch() {
       toggledCards = [];
     }, 1000);
   }
+}
+
+// Handle the counts for the number to turns the user takes where a turn includes flipping over 2 cards
+
+let counts = 0;
+
+function addCount() {
+  counts++;
+  const countTotal = document.getElementById('movesCounter');
+  countTotal.innerHTML = counts + ' move(s)';
 }
