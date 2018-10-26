@@ -64,6 +64,32 @@ function shuffle(array) {
  *    + if all cards have matched, display a message with the final score (put this functionality in another function that you call from this one)
  */
 
+// Create a timer value that will initially be set to false until user begins game
+let timerOff = true;
+let timeLength = 0;
+let timerId;
+
+
+// Function to start the timer when initial valid click happens
+function startTimer() {
+  timerId = setInterval(() => {
+    timeLength++;
+    showTimer();
+  }, 1000);
+}
+
+// Function to display the timer
+function showTimer() {
+  const timer = document.querySelector('.timer');
+  let minutes = parseInt(timeLength / 60);
+  let seconds = timeLength % 60;
+  if (seconds < 10) {
+    timer.innerHTML = `${minutes}:0${seconds}`;
+  } else {
+    timer.innerHTML = `${minutes}:${seconds}`;
+  }
+}
+
 // Create an empty array for the two toggled cards to pushed to so they can be compared
 let toggledCards = [];
 
@@ -71,6 +97,10 @@ let toggledCards = [];
 deck.addEventListener('click', event => {
   const cardTarget = event.target;
   if (isValidClick(cardTarget)) {
+    if (timerOff) {
+      startTimer();
+      timerOff = false;
+    }
     toggleCard(cardTarget);
     toggledCardsList(cardTarget);
     if (toggledCards.length === 2) {

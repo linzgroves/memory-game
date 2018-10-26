@@ -102,7 +102,12 @@ h1 {
   display: inline-block;
 }
 
+.score-panel .pause {
+  cursor: pointer;
+}
+
 .score-panel .restart {
+  padding: 0 15px;
   float: right;
   cursor: pointer;
 }
