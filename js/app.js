@@ -120,11 +120,37 @@ function checkIfMatch() {
 }
 
 // Handle the counts for the number to turns the user takes where a turn includes flipping over 2 cards
-
+//TODO: If under 2 counts, only display 'count', otherwise display 'counts'
 let counts = 0;
 
 function addCount() {
   counts++;
   const countTotal = document.getElementById('movesCounter');
-  countTotal.innerHTML = counts + ' move(s)';
+  countTotal.innerHTML = counts;
+  starRating();
+}
+
+// Have star rating based on the above counts. If at 12 or below, it's 3 stars; 16 is 2 stars; 24 or above is 1 star.
+const allStars = document.querySelectorAll('.stars li i');
+
+function starRating() {
+  if (counts === 0) {
+    for (star of allStars) {
+      star.classList.toggle('fa-star-o');
+    }
+  }
+  if (counts === 16 || counts === 24) {
+    hideStar();
+  }
+}
+
+function hideStar() {
+  //when hideStar is run because of above counts, I want to toggle the next star class to change to fa-star-o
+  for (star of allStars) {
+    if (star.classList.contains('fa-star')) {
+      star.classList.toggle('fa-star');
+      star.classList.toggle('fa-star-o');
+      break;
+    }
+  }
 }
