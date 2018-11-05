@@ -90,6 +90,10 @@ h1 {
   margin-bottom: 10px;
 }
 
+.score-panel .score-elements {
+  padding: 0 5px;
+}
+
 .score-panel .stars {
   margin: 0;
   padding: 0;
@@ -109,5 +113,52 @@ h1 {
 .score-panel .restart {
   padding: 0 15px;
   float: right;
+  cursor: pointer;
+}
+
+/*
+ * Modal styles
+ */
+.hide {
+  display: none;
+}
+
+.modal-container {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  top: 0;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.modal-close {
+  float: right;
+  font-weight: bold;
+}
+
+.modal-close:hover {
+  cursor: pointer;
+}
+
+.modal-body {
+  background-color: #fff;
+  margin: 15% auto;
+  padding: 20px;
+  border: 1px solid #000;
+  width: 35%;
+  text-align: center;
+}
+
+.modal-stats span {
+  display: block;
+  padding: 10px 0;
+}
+
+.playAgain {
+  background-color: #fff;
+  padding: 10px;
+}
+
+.playAgain:hover {
   cursor: pointer;
 }

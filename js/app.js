@@ -18,13 +18,6 @@ resultElement.innerHTML = listItems;
  */
 const deck = document.querySelector('.deck');
 
-/*
- * Display the cards on the page
- *   - shuffle the list of cards using the provided "shuffle" method below
- *   - loop through each card and create its HTML
- *   - add each card's HTML to the page
- */
-
 // Turn nodeList of all li elements into an array that can be used by shuffle function
 function shuffleCards() {
   const cardsToShuffle = [].slice.call(document.querySelectorAll("li.card"));
@@ -34,7 +27,6 @@ function shuffleCards() {
   }
 }
 shuffleCards();
-
 
 // Shuffle function from http://stackoverflow.com/a/2450976
 function shuffle(array) {
@@ -52,17 +44,13 @@ function shuffle(array) {
   return array;
 }
 
-
-/*
- * set up the event listener for a card. If a card is clicked:
- *  - display the card's symbol (put this functionality in another function that you call from this one)
- *  - add the card to a *list* of "open" cards (put this functionality in another function that you call from this one)
- *  - if the list already has another card, check to see if the two cards match
- *    + if the cards do match, lock the cards in the open position (put this functionality in another function that you call from this one)
- *    + if the cards do not match, remove the cards from the list and hide the card's symbol (put this functionality in another function that you call from this one)
- *    + increment the move counter and display it on the page (put this functionality in another function that you call from this one)
- *    + if all cards have matched, display a message with the final score (put this functionality in another function that you call from this one)
- */
+// Reset function to turn cards back over
+function resetDeck() {
+  const cards = document.querySelectorAll('.deck li');
+  for (card of cards) {
+    card.className = "card";
+  }
+}
 
 // Create a timer value that will initially be set to false until user begins game
 let timerOff = true;
@@ -78,17 +66,87 @@ function startTimer() {
   }, 1000);
 }
 
+// Function to stop the timer, which will be used when user wins game
+function stopTimer() {
+  clearInterval(timerId);
+}
+
 // Function to display the timer
 function showTimer() {
   const timer = document.querySelector('.timer');
   let minutes = parseInt(timeLength / 60);
   let seconds = timeLength % 60;
   if (seconds < 10) {
-    timer.innerHTML = `${minutes}:0${seconds}`;
+    timer.innerHTML = `Time: ${minutes}:0${seconds}`;
   } else {
-    timer.innerHTML = `${minutes}:${seconds}`;
+    timer.innerHTML = `Time: ${minutes}:${seconds}`;
   }
 }
+
+// Restart function to reload the page/game
+function resetGame() {
+  resetTimer();
+  resetStars();
+  resetMoves();
+  resetDeck();
+}
+
+function resetTimer() {
+  stopTimer();
+  timerOff = true;
+  timeLength = 0;
+  showTimer();
+}
+
+function resetStars() {
+  starCount = 0;
+  const allStars = document.querySelectorAll('.stars li i');
+  for (star of allStars) {
+    if (star.classList.contains('fa-star-o')) {
+      star.classList.toggle('fa-star-o');
+      star.classList.toggle('fa-star');
+    }
+  }
+}
+
+function resetMoves() {
+  counts = 0;
+  document.querySelector('.moves').innerHTML = `Moves: ${counts}`;
+}
+
+// Function to take game stats and display them in modal
+function displayStats() {
+  const timeStat = document.querySelector('.modal-time');
+  const timerStopped = document.querySelector('.timer').innerHTML;
+  const starStat = document.querySelector('.modal-stars');
+  const moveStat = document.querySelector('.modal-moves');
+
+  timeStat.innerHTML = `${timerStopped}`;
+  moveStat.innerHTML = `Moves: ${counts}`;
+  starStat.innerHTML = `Stars: ${starCount}`;
+}
+
+// Function to show modal
+function showModal() {
+  const modal = document.querySelector('.modal-container');
+  modal.classList.toggle('hide');
+}
+
+// Event listener for closing the modal
+document.querySelector('.modal-close').addEventListener('click', event => {
+  showModal();
+  resetGame();
+});
+
+// Event listener for replaying the game
+document.querySelector('.playAgain').addEventListener('click', event => {
+  showModal();
+  resetGame();
+});
+
+document.querySelector('.restart').addEventListener('click', event => {
+  resetGame();
+});
 
 // Create an empty array for the two toggled cards to pushed to so they can be compared
 let toggledCards = [];
@@ -132,6 +190,9 @@ function toggledCardsList(cardTarget) {
 }
 
 // Check if the cards clicked and added to the toggledCards array match and add timeout so toggles isn't immediate
+let matched = 0;
+const TOTAL_PAIRS = 8;
+
 function checkIfMatch() {
   if (
     toggledCards[0].firstElementChild.className ===
@@ -140,6 +201,12 @@ function checkIfMatch() {
     toggledCards[0].classList.toggle('match');
     toggledCards[1].classList.toggle('match');
     toggledCards = [];
+    matched++;
+    if (matched === TOTAL_PAIRS) {
+      setTimeout(() => {
+        gameWon();
+      }, 1000);
+    }
   } else {
     setTimeout(() => {
       toggleCard(toggledCards[0]);
@@ -149,6 +216,14 @@ function checkIfMatch() {
   }
 }
 
+// Handle determining if user has won
+function gameWon() {
+  stopTimer();
+  displayStats();
+  showModal();
+  resetDeck();
+}
+
 // Handle the counts for the number to turns the user takes where a turn includes flipping over 2 cards
 //TODO: If under 2 counts, only display 'count', otherwise display 'counts'
 let counts = 0;
@@ -156,12 +231,13 @@ let counts = 0;
 function addCount() {
   counts++;
   const countTotal = document.getElementById('movesCounter');
-  countTotal.innerHTML = counts;
+  countTotal.innerHTML = `Moves: ${counts}`;
   starRating();
 }
 
-// Have star rating based on the above counts. If at 12 or below, it's 3 stars; 16 is 2 stars; 24 or above is 1 star.
+// Have star rating based on the above counts. If at 10 or below, it's 3 stars; above 10 but below 15 is 2 stars; 16 or above is 1 star.
 const allStars = document.querySelectorAll('.stars li i');
+let starCount = 3;
 
 function starRating() {
   if (counts === 0) {
@@ -169,7 +245,8 @@ function starRating() {
       star.classList.toggle('fa-star-o');
     }
   }
-  if (counts === 16 || counts === 24) {
+  if (counts === 11 || counts === 16) {
+    starCount--;
     hideStar();
   }
 }
