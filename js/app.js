@@ -80,19 +80,50 @@ function shuffle(array) {
 let toggledCards = [];
 
 // Use addEventListener to listen for the cards being clicked and then call the toggle function
-
+deck.addEventListener("click", event => {
+  const cardClicked = event.target;
+  if (canClick(cardClicked)) {
+    toggleClass(cardClicked);
+    pushCards(cardClicked);
+    if (toggledCards.length == 2) {
+      compareCards(cardClicked);
+    }
+  }
+});
 
 // Check if click meets all the conditions
-
+function canClick(cardClicked) {
+  return (
+    toggledCards.length < 2
+  );
+}
 
 // This toggles the open and show classes
-
+function toggleClass(cardClicked) {
+  cardClicked.classList.toggle("open");
+  cardClicked.classList.toggle("show");
+}
 
 // Function to push any toggled cards into the toggledCards array
-
+function pushCards(cardClicked) {
+  toggledCards.push(cardClicked);
+}
 
 // Check if the cards clicked and added to the toggledCards array match and add timeout so toggles isn't immediate
+function compareCards(cardClicked) {
+  if (toggledCards[0].lastElementChild.className === toggledCards[1].lastElementChild.className) {
+    toggledCards[0].classList.add("match");
+    toggledCards[1].classList.add("match");
+    toggledCards = [];
+  } else {
+    setTimeout(() => {
+      toggleClass(toggledCards[0]);
+      toggleClass(toggledCards[1]);
+      toggledCards = [];
+    }, 1000);
 
+  }
+}
 
 
 
