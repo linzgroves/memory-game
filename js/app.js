@@ -45,13 +45,19 @@ function shuffle(array) {
 }
 
 // Reset function to turn cards back over
+//when restart clicked, remove all card classes of open/show/match
+//clear the counts, the matches, and the array of matched cards (if needed)
 
 // Create a timer value that will initially be set to false until user begins game
-
+let timer = false;
 
 
 // Function to start the timer when initial valid click happens
+function startTimer(cardClicked) {
+  if (timer == false) {
 
+  }
+}
 
 // Function to stop the timer, which will be used when user wins game
 
@@ -79,6 +85,9 @@ function shuffle(array) {
 // Create an empty array for the two toggled cards to pushed to so they can be compared
 let toggledCards = [];
 
+// Create a variable to keep track of matches
+let matchedCards = 0;
+
 // Use addEventListener to listen for the cards being clicked and then call the toggle function
 deck.addEventListener("click", event => {
   const cardClicked = event.target;
@@ -87,6 +96,7 @@ deck.addEventListener("click", event => {
     pushCards(cardClicked);
     if (toggledCards.length == 2) {
       compareCards(cardClicked);
+      counts++;
     }
   }
 });
@@ -115,6 +125,8 @@ function compareCards(cardClicked) {
     toggledCards[0].classList.add("match");
     toggledCards[1].classList.add("match");
     toggledCards = [];
+    matchedCards++;
+    allMatched();
   } else {
     setTimeout(() => {
       toggleClass(toggledCards[0]);
@@ -125,16 +137,20 @@ function compareCards(cardClicked) {
   }
 }
 
-
-
 // Handle determining if user has won
-
+function allMatched() {
+  if (matchedCards == 8) {
+    //Todo: modal should open here with stats
+    console.log("you won");
+  }
+}
 
 // Handle the counts for the number to turns the user takes where a turn includes flipping over 2 cards
 //TODO: If under 2 counts, only display 'count', otherwise display 'counts'
 let counts = 0;
+movesElement = document.getElementById('movesCounter');
 
-
+movesElement.innerHTML = `<span class="moves">Moves: ${counts}</span>`;
 
 // Have star rating based on the above counts. If at 10 or below, it's 3 stars; above 10 but below 15 is 2 stars; 16 or above is 1 star.
 const allStars = document.querySelectorAll('.stars li i');
