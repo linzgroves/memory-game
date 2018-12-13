@@ -48,14 +48,22 @@ function shuffle(array) {
 //when restart clicked, remove all card classes of open/show/match
 //clear the counts, the matches, and the array of matched cards (if needed)
 
+
+
 // Create a timer value that will initially be set to false until user begins game
 let timer = false;
-
+let seconds = 0;
+let showTime = document.querySelector('.timer');
 
 // Function to start the timer when initial valid click happens
 function startTimer(cardClicked) {
   if (timer == false) {
+    timer == true;
+    setInterval(function() {
+      seconds++;
 
+      showTime.innerHTML = seconds;
+    }, 1000);
   }
 }
 
@@ -94,6 +102,7 @@ deck.addEventListener("click", event => {
   if (canClick(cardClicked)) {
     toggleClass(cardClicked);
     pushCards(cardClicked);
+    startTimer(cardClicked);
     if (toggledCards.length == 2) {
       compareCards(cardClicked);
       counts++;
@@ -112,6 +121,7 @@ function canClick(cardClicked) {
 function toggleClass(cardClicked) {
   cardClicked.classList.toggle("open");
   cardClicked.classList.toggle("show");
+  cardClicked.classList.remove("shakeCard");
 }
 
 // Function to push any toggled cards into the toggledCards array
@@ -124,10 +134,14 @@ function compareCards(cardClicked) {
   if (toggledCards[0].lastElementChild.className === toggledCards[1].lastElementChild.className) {
     toggledCards[0].classList.add("match");
     toggledCards[1].classList.add("match");
+    toggledCards[0].classList.add("bounceCard");
+    toggledCards[1].classList.add("bounceCard");
     toggledCards = [];
     matchedCards++;
     allMatched();
   } else {
+    toggledCards[0].classList.add("shakeCard");
+    toggledCards[1].classList.add("shakeCard");
     setTimeout(() => {
       toggleClass(toggledCards[0]);
       toggleClass(toggledCards[1]);
